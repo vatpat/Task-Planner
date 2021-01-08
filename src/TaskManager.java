@@ -20,7 +20,15 @@ public class TaskManager extends Frame {
   }
   
   public static void main(String[] args) {
-    TaskManager t = new TaskManager();
+    // TaskManager t = new TaskManager();
     // System.out.println(Task.checkDateValid(02, 28, 2021));
+    // Task a = new Task("desc", "12/30/2020");
+    // Task b = new Task("desc", "12/20/2020");
+    // System.out.print(a.compareTo(b));
+    // TaskList t = new TaskList();
+    // t.insert(a);
+    // t.insert(b);
+    
+    // System.out.println("LIST: \n" + t.toString());
   }
 }

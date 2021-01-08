@@ -8,7 +8,7 @@ import java.util.Date;
  * @author vatrp
  *
  */
-public class Task {
+public class Task implements Comparable<Task> {
   private String description; // The description of the Task
   private int day; // The day that the Task is due
   private int month; // The month that the Task is due
@@ -55,7 +55,7 @@ public class Task {
   public int getMonth() {
     return this.month;
   }
-  
+
   /**
    * Accessor method for the day that the Task is due
    * 
@@ -79,10 +79,40 @@ public class Task {
     c.setLenient(false); // Invalid dates should not be handled with leniency
     c.set(year, month - 1, day); // Our month is 1-based whereas set uses a 0-based month
     try {
-      System.out.println(c.getTime()); // Attempt to get the time
+      Date time = c.getTime(); // Attempt to get the time
       return true; // If there isn't an Exception then the date is valid
     } catch (Exception e) {
       return false; // Exception thrown - date is not valid
     }
+  }
+
+  /**
+   * Returns a negative number if this task is due sooner than other, a positive number if the other
+   * task is due sooner, or 0 if the tasks are due on the same day
+   */
+  @Override
+  public int compareTo(Task other) {
+    // This task is less than other if this task's due date comes before other's due date
+    // Year:
+    if (this.year != other.year) {
+      return this.year - other.year;
+    } else {
+      // Month:
+      if (this.month != other.month) {
+        return this.month - other.month;
+      } else {
+        // Day:
+        return this.day - other.day;
+      }
+    }
+  }
+  
+  /**
+   * Returns a String representation of the Task
+   * 
+   * @return A String representation of the Task
+   */
+  public String toString() {
+    return this.description + " " + this.month + "/" + this.day + "/" + this.year;
   }
 }
