@@ -32,6 +32,9 @@ public class TaskList {
     // Otherwise, find the first element in the list that is greater than the newTask
     int current = 0;
     while (current < this.tasks.size() && this.tasks.get(current).compareTo(newTask) <= 0) {
+      if(this.tasks.get(current).equals(newTask)) {
+        throw new IllegalArgumentException("Task Already Added");
+      }
       current++;
     }
 
@@ -56,7 +59,8 @@ public class TaskList {
   public String toString() {
     String ret = "";
     for (Task t : this.tasks) {
-      ret += t.toString() + "\n";
+      ret += t.toString();
+      ret += "\n";
     }
     return ret;
   }

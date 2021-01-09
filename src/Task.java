@@ -21,6 +21,11 @@ public class Task implements Comparable<Task> {
    * @param dueDate     The date that the Task is due, formatted as MM/DD/YYYY
    */
   public Task(String description, String dueDate) {
+    // Ensure description and dueDate are not empty
+    if (description.equals("") || dueDate.equals("")) {
+      throw new IllegalArgumentException("Description and Due Date can not be empty");
+    }
+
     // Check date is separated by dashes
     String[] parsed = dueDate.split("/");
     if (parsed.length != 3) {
@@ -106,13 +111,30 @@ public class Task implements Comparable<Task> {
       }
     }
   }
-  
+
+  /**
+   * Returns true if other is an instance of Task and has the same description and due date as this
+   * Task
+   * 
+   * @return True if this Task and other have the same description and due date
+   */
+  @Override
+  public boolean equals(Object other) {
+    if(other instanceof Task) {
+      Task otherTask = (Task) other;
+      if(this.compareTo(otherTask) == 0 && this.description.equals(otherTask.description)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Returns a String representation of the Task
    * 
    * @return A String representation of the Task
    */
   public String toString() {
-    return this.description + " " + this.month + "/" + this.day + "/" + this.year;
+    return this.month + "/" + this.day + "/" + this.year + " " + this.description;
   }
 }
