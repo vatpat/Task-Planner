@@ -6,13 +6,13 @@ import java.awt.event.WindowEvent;
 import java.awt.font.*;
 
 public class TaskManager extends Frame {
-  private TaskManager self;
   private Label appHeader;
   private TextField enterFieldTask;
   private TextField enterFieldDate;
   private Label taskFieldLabel;
   private Label taskDateLabel;
   private Button submitButton;
+  private Button removeButton;
   private Label errorMessage;
   private Label space;
   private TextArea tasks;
@@ -20,10 +20,15 @@ public class TaskManager extends Frame {
 
 
   public TaskManager() {
-    self = this;
-    //this.setMinimumSize(new Dimension(800, 300));
+    // General Properties
+    setTitle("Task Planner");
+    setSize(800, 400);
+    setResizable(false);
+
+    // Initialize TaskList
     tasklist = new TaskList();
 
+    // Set Layout
     GridBagConstraints constraints = new GridBagConstraints();
     GridBagLayout layout = new GridBagLayout();
     setLayout(layout);
@@ -34,14 +39,15 @@ public class TaskManager extends Frame {
     // Resize factor
     constraints.weightx = 1.0;
 
+    // Header
     constraints.gridx = 0;
     constraints.gridy = 0;
     appHeader = new Label("Task Manager");
-    // appHeader.setAlignment(Label.CENTER);
     appHeader.setFont(new Font("Serif", Font.BOLD, 30));
     layout.setConstraints(appHeader, constraints);
     add(appHeader);
 
+    // Enter Description Label
     constraints.gridx = 0;
     constraints.gridy = 2;
     taskFieldLabel = new Label("Enter the Task Description: ");
@@ -49,6 +55,7 @@ public class TaskManager extends Frame {
     layout.setConstraints(taskFieldLabel, constraints);
     add(taskFieldLabel);
 
+    // Enter Description Field
     constraints.gridx = 0;
     constraints.gridy = 3;
     enterFieldTask = new TextField();
@@ -56,6 +63,7 @@ public class TaskManager extends Frame {
     layout.setConstraints(enterFieldTask, constraints);
     add(enterFieldTask);
 
+    // Enter Date Label
     constraints.gridx = 0;
     constraints.gridy = 5;
     taskDateLabel = new Label("Enter the Due Date as MM/DD/YYYY: ");
@@ -63,6 +71,7 @@ public class TaskManager extends Frame {
     layout.setConstraints(taskDateLabel, constraints);
     add(taskDateLabel);
 
+    // Enter Date Field
     constraints.gridx = 0;
     constraints.gridy = 6;
     enterFieldDate = new TextField();
@@ -70,6 +79,7 @@ public class TaskManager extends Frame {
     layout.setConstraints(enterFieldDate, constraints);
     add(enterFieldDate);
 
+    // Add Button + Action Listener
     constraints.gridx = 0;
     constraints.gridy = 8;
     submitButton = new Button("Add");
@@ -77,21 +87,32 @@ public class TaskManager extends Frame {
     add(submitButton);
     submitButton.addActionListener(new AddButtonEvent());
 
+    // Remove Button + Action Listener
     constraints.gridx = 0;
     constraints.gridy = 9;
+    removeButton = new Button("Remove");
+    layout.setConstraints(removeButton, constraints);
+    add(removeButton);
+    removeButton.addActionListener(new RemoveButtonEvent());
+
+    // Error Message Label
+    constraints.gridx = 0;
+    constraints.gridy = 10;
     errorMessage = new Label();
     layout.setConstraints(errorMessage, constraints);
     add(errorMessage);
 
-    constraints.gridx = 0;
-    constraints.gridy = 11;
-    space = new Label("Tasks:"); 
-    layout.setConstraints(space, constraints);
-    add(space);
-    
+    // Task List Label
     constraints.gridx = 0;
     constraints.gridy = 12;
-    tasks = new TextArea(tasklist.toString(), 0, 20); 
+    space = new Label("Tasks:");
+    layout.setConstraints(space, constraints);
+    add(space);
+
+    // Task List Field
+    constraints.gridx = 0;
+    constraints.gridy = 13;
+    tasks = new TextArea(tasklist.toString(), 0, 20);
     tasks.setEditable(false);
     layout.setConstraints(tasks, constraints);
     add(tasks);
@@ -104,8 +125,7 @@ public class TaskManager extends Frame {
       }
     });
 
-    setTitle("Task Planner");
-    setSize(800, 400);
+    // Set Visible
     setVisible(true);
   }
 
@@ -113,6 +133,9 @@ public class TaskManager extends Frame {
     TaskManager t = new TaskManager();
   }
 
+  /**
+   * The AddButtonEvent class handles the response to the Add button being pressed
+   */
   class AddButtonEvent implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       try {
@@ -120,6 +143,27 @@ public class TaskManager extends Frame {
         String date = enterFieldDate.getText();
         tasklist.insert(new Task(desc, date));
         errorMessage.setText("");
+        enterFieldTask.setText("");
+        enterFieldDate.setText("");
+      } catch (IllegalArgumentException iae) {
+        errorMessage.setText(iae.getMessage());
+      }
+      tasks.setText(tasklist.toString());
+    }
+  }
+
+  /**
+   * The RemoveButtonEvent class handles the response to the Remove button being pressed
+   */
+  class RemoveButtonEvent implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      try {
+        String desc = enterFieldTask.getText();
+        String date = enterFieldDate.getText();
+        tasklist.remove(new Task(desc, date));
+        errorMessage.setText("");
+        enterFieldTask.setText("");
+        enterFieldDate.setText("");
       } catch (IllegalArgumentException iae) {
         errorMessage.setText(iae.getMessage());
       }

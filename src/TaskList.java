@@ -48,7 +48,10 @@ public class TaskList {
    * @param removedTask The task to be removed from the ArrayList
    */
   public void remove(Task removedTask) {
-    this.tasks.remove(removedTask);
+    boolean removed = this.tasks.remove(removedTask);
+    if(!removed) {
+      throw new IllegalArgumentException("No Such Task");
+    }
   }
 
   /**
