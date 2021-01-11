@@ -1,4 +1,8 @@
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 /**
  * The TaskList class maintains a sorted ArrayList of Tasks that is updated whenever the user enters
@@ -32,7 +36,7 @@ public class TaskList {
     // Otherwise, find the first element in the list that is greater than the newTask
     int current = 0;
     while (current < this.tasks.size() && this.tasks.get(current).compareTo(newTask) <= 0) {
-      if(this.tasks.get(current).equals(newTask)) {
+      if (this.tasks.get(current).equals(newTask)) {
         throw new IllegalArgumentException("Task Already Added");
       }
       current++;
@@ -49,7 +53,7 @@ public class TaskList {
    */
   public void remove(Task removedTask) {
     boolean removed = this.tasks.remove(removedTask);
-    if(!removed) {
+    if (!removed) {
       throw new IllegalArgumentException("No Such Task");
     }
   }
@@ -66,5 +70,46 @@ public class TaskList {
       ret += "\n";
     }
     return ret;
+  }
+
+  /**
+   * Reads the contents of the file into the provided TaskList
+   * 
+   * @param filename The name of the text file
+   * @param tasks    The TaskList being read into
+   * @throws FileNotFoundException if the File does not exist
+   */
+  public static void readFile(String filename, TaskList tasks) throws FileNotFoundException {
+    File file = new File(filename);
+    Scanner s = new Scanner(file);
+    
+    while (s.hasNext()) {
+      // Get next line
+      String line = s.nextLine();
+
+      // Separate line into date and description
+      String[] taskInfo = line.split(" ");
+      String date = taskInfo[0];
+      String description = taskInfo[1];
+
+      // Create Task and add to TaskList
+      Task t = new Task(description, date);
+      tasks.insert(t);
+    }
+  }
+
+  /**
+   * Saves the information in the task list into the specified file
+   * 
+   * @param filename The file to store the task information in
+   * @param tasks    The list of tasks to store
+   * @throws FileNotFoundException if the File does not exist
+   */
+  public static void saveFile(String filename, TaskList tasks) throws FileNotFoundException {
+    File file = new File(filename);
+
+    PrintWriter p = new PrintWriter(file);
+    p.write(tasks.toString());
+    p.close();
   }
 }

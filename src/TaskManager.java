@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.font.*;
+import java.io.FileNotFoundException;
 
 public class TaskManager extends Frame {
   private Label appHeader;
@@ -117,11 +118,24 @@ public class TaskManager extends Frame {
     layout.setConstraints(tasks, constraints);
     add(tasks);
 
+    // Load Previous Tasks
+    try {
+      TaskList.readFile("tasks.txt", tasklist);
+      tasks.setText(tasklist.toString());
+    } catch (FileNotFoundException fnfe) {
+      errorMessage.setText("Error Loading Previous Tasks");
+    }
+
     // Handling window closing when exited
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
         dispose();
+        try {
+          TaskList.saveFile("tasks.txt", tasklist);
+        } catch (FileNotFoundException fnfe) {
+          errorMessage.setText("Error Saving Tasks");
+        }
       }
     });
 
